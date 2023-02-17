@@ -1,5 +1,5 @@
 not_end_game=$true;
-your_xpos=5;
+your_xpos=8;
 your_ypos=5;
 cursor_xpos=0;
 cursor_ypos=0;
@@ -8,12 +8,14 @@ tree="T";
 you="Y";
 whole_map="";
 end_line="_";
-screen_width = 10;
-screen_height = 10;
+screen_width=10;
+screen_height=10;
 
 
 ##########  initial map creation and draw
+
 while [ $cursor_ypos -lt $screen_height ]
+
         do
         this_line="";
         while [ $cursor_xpos -lt $screen_width ]
@@ -36,7 +38,7 @@ while [ $cursor_ypos -lt $screen_height ]
                 cursor_ypos=$((cursor_ypos+1))
                 cursor_xpos=0
                 echo $this_line
-                whole_map=$this_line$end_line
+                whole_map=$whole_map$this_line$end_line
 
         done
         echo " "
@@ -47,26 +49,53 @@ while [ $cursor_ypos -lt $screen_height ]
 while [ not_end_game ]
 
 
-########################### choose player move below 
+########################### choose player move below
         do
         echo "make a move: w, a, s ,d"
         this_line=""
-        for char in $whole_map
+
+
+
+
+        for (( i=0; i<${#whole_map}; i++ ));
                 do
-                        if [ char == "_" ]
+                        if [[ "${whole_map:$i:1}" == "_" ]]
                                 then
-                                        echo this_line;
+                                        echo $this_line;
                                         this_line="";
                         else
-                                this_line=$this_line$char;
+                                        this_line=$this_line${whole_map:$i:1};
                         fi
+
                 done
+
+
+
         read player_move
         if [ $player_move == "w" ]
                 then
+                        echo $whole_map
+
+                        old_pos=$(((($screen_width+1)*$your_ypos)+$your_xpos))
+                        new_pos=$(((($screen_width+1)*($your_ypos-1))+$your_xpos))
+
+
+                        echo $old_pos
+                        echo $new_pos
+                        echo $your_ypos
                         your_ypos=$((your_ypos-1))
-                        whole_map[$your_xpos,$((your_ypos+1))]=$grass
-                        whole_map[$your_xpos,$your_ypos]=$you
+                        echo $your_ypos
+
+                        echo $screen_width
+
+                        # update for new_pos
+                        new_char="y"
+                        prefix=${whole_map:0:$((new_pos-1))}
+                        suffix=${whole_map:$new_pos}
+                        whole_map="$prefix$new_char$suffix"
+
+                        echo $whole_map
+
         elif [ $player_move == "a" ]
                 then
                         your_xpos=$your_xpos-1
@@ -85,21 +114,7 @@ while [ not_end_game ]
                 fi
 
 
-######## do other moves below 
+######## do other moves below
 
 
-
-
-
-
-######### draw all below 
-        for y in {1..$screen_height}
-          do
-            this_line="";
-            for x in {1..$screen_width}
-              do
-                this_line=$this_line$whole_map[$x,$y]
-              done
-            echo $this_line
-          done
-        done
+      done
