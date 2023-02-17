@@ -8,13 +8,15 @@ tree="T";
 you="Y";
 whole_map="";
 end_line="_";
+screen_width = 10;
+screen_height = 10;
 
-while [ $cursor_ypos -lt 10 ]
+
+##########  initial map creation and draw
+while [ $cursor_ypos -lt $screen_height ]
         do
-
-
         this_line="";
-        while [ $cursor_xpos -lt 10 ]
+        while [ $cursor_xpos -lt $screen_width ]
                 do
                 if [ $cursor_xpos == $your_xpos ] && [ $cursor_ypos == $your_ypos ]
                         then
@@ -41,8 +43,11 @@ while [ $cursor_ypos -lt 10 ]
         echo " "
         cursor_ypos=0
 
-your_ypos = 5;
+
 while [ not_end_game ]
+
+
+########################### choose player move below 
         do
         echo "make a move: w, a, s ,d"
         this_line=""
@@ -77,5 +82,19 @@ while [ not_end_game ]
                         your_xpos=$your_xpos+1
                         whole_map[$your_xpos-1,$your_ypos]=$grass
                         whole_map[$your_xpos,$your_ypos]=$you
-        fi
+                fi
+
+
+######## do other moves below 
+
+
+
+
+
+
+######### draw all below 
+        for i in {1..$screen_height}
+          do
+            echo($whole_map[$i])
+          done
         done
