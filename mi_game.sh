@@ -93,8 +93,13 @@ while [ not_end_game ]
 
 
 ######### draw all below 
-        for i in {1..$screen_height}
+        for y in {1..$screen_height}
           do
-            echo($whole_map[$i])
+            this_line="";
+            for x in {1..$screen_width}
+              do
+                this_line=$this_line$whole_map[$x,$y]
+              done
+            echo $this_line
           done
         done
