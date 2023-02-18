@@ -1,3 +1,9 @@
+#to do list
+#1 left right and down
+#2 detect if moving onto grass or not, can only move onto grass
+#3 enemies
+
+
 not_end_game=$true;
 your_xpos=8;
 your_ypos=5;
@@ -20,7 +26,7 @@ while [ $cursor_ypos -lt $screen_height ]
         this_line="";
         while [ $cursor_xpos -lt $screen_width ]
                 do
-                if [ $cursor_xpos == $your_xpos ] && [ $cursor_ypos == $your_ypos ]
+                        if [ $((cursor_xpos+1)) == $your_xpos ] && [ $cursor_ypos == $your_ypos ]
                         then
                                 this_line=$this_line$you
                         else
@@ -94,6 +100,12 @@ while [ not_end_game ]
                         suffix=${whole_map:$new_pos}
                         whole_map="$prefix$new_char$suffix"
 
+                        # update for old pos
+                        new_char="#"
+                        prefix=${whole_map:0:$((old_pos-1))}
+                        suffix=${whole_map:$old_pos}
+                        whole_map="$prefix$new_char$suffix"
+
                         echo $whole_map
 
         elif [ $player_move == "a" ]
@@ -118,3 +130,4 @@ while [ not_end_game ]
 
 
       done
+~                                                                                                                                                                                                                                                                                                                                                                                                                                   ~                                                                                                                                                                                                                                                                                                                                                                                                                                   ~                                       
