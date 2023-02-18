@@ -76,23 +76,13 @@ while [ not_end_game ]
                 done
 
 
-
+        old_pos=$(((($screen_width+1)*$your_ypos)+$your_xpos)
         read player_move
         if [ $player_move == "w" ]
                 then
-                        echo $whole_map
 
-                        old_pos=$(((($screen_width+1)*$your_ypos)+$your_xpos))
                         new_pos=$(((($screen_width+1)*($your_ypos-1))+$your_xpos))
-
-
-                        echo $old_pos
-                        echo $new_pos
-                        echo $your_ypos
                         your_ypos=$((your_ypos-1))
-                        echo $your_ypos
-
-                        echo $screen_width
 
                         # update for new_pos
                         new_char="y"
@@ -110,9 +100,21 @@ while [ not_end_game ]
 
         elif [ $player_move == "a" ]
                 then
-                        your_xpos=$your_xpos-1
-                        whole_map[$((your_xpos+1)),$your_ypos]=$grass
-                        whole_map[$your_xpos,$your_ypos]=$you
+                        new_pos=$(((($screen_width+1)*($your_ypos))+$your_xpos-1))
+                        your_ypos=$((your_ypos-1))
+                        # update for new_pos
+                        new_char="y"
+                        prefix=${whole_map:0:$((new_pos-1))}
+                        suffix=${whole_map:$new_pos}
+                        whole_map="$prefix$new_char$suffix"
+
+                       # update for old pos
+                        new_char="#"
+                        prefix=${whole_map:0:$((old_pos-1))}
+                        suffix=${whole_map:$old_pos}
+                        whole_map="$prefix$new_char$suffix"
+
+                        u
         elif [ $player_move == "s" ]
                 then
                         your_ypos=$your_ypos+1
@@ -128,6 +130,3 @@ while [ not_end_game ]
 
 ######## do other moves below
 
-
-      done
-~                                                                                                                                                                                                                                                                                                                                                                                                                                   ~                                                                                                                                                                                                                                                                                                                                                                                                                                   ~                                       
