@@ -1,7 +1,6 @@
 #to do list
-#1 moving right seems to break things
-#2 detect if moving onto grass or not, can only move onto grass
-#3 enemies
+#1 detect if moving onto grass or not, can only move onto grass
+#2 enemies
 
 
 not_end_game=$true;
