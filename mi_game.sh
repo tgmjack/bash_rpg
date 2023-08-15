@@ -5,6 +5,7 @@
 # 3   goblin movement 
 # 4   inventory (done)
 # 5   enemies dont come from the right 
+# 6   
 
 average_number_of_frames_till_enemy_spawn=5;
 not_end_game=$true;
