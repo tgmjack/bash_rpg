@@ -3,7 +3,7 @@
 # 1   absolute value for dx and dy in goblin spawner 
 # 2   bow attacks 
 # 3   goblin movement 
-# 4   inventory
+# 4   inventory (done)
 # 5   enemies dont come from the right 
 
 average_number_of_frames_till_enemy_spawn=5;
