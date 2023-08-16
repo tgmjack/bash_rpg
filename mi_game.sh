@@ -2,12 +2,10 @@
 
 # 1   absolute value for dx and dy in goblin spawner 
 # 2   bow attacks 
-# 3   goblin movement 
-# 4   inventory (done)
-# 5   enemies dont come from the right 
-# 6   
+# 3   stop goblins moving through trees 
 
-average_number_of_frames_till_enemy_spawn=5;
+
+average_number_of_frames_till_enemy_spawn=15;
 not_end_game=$true;
 your_xpos=6;
 your_ypos=5;
@@ -18,8 +16,8 @@ tree="T";
 you="Y";
 whole_map="";
 end_line="_";
-screen_width=10;
-screen_height=10;
+screen_width=15;
+screen_height=15;
 
 
 ##########  initial map creation and draw
@@ -63,16 +61,17 @@ sword_exp=0
 bow_exp=0
 turn_counter=0
 inventory=("apple")
+goblin_positions=()
+
 ###################
 ### main game loop
 ###################
 
 
 while [ not_end_game ]
-
-
 ########################### choose player move below
         do
+        
         turn_counter=$((turn_counter+1))
         echo "==============    new turn    =============="
         echo " health = "$health"   sword exp = "$sword_exp"    bow exp = "$bow_exp"    turn = "$turn_counter
@@ -108,12 +107,17 @@ while [ not_end_game ]
         echo "y = you       # = grass        T = tree      G = golbin"
         old_pos=$((($screen_width + 1) * $your_ypos + $your_xpos))
         read player_move
+
+        if [ -z "$player_move" ];
+                then
+                new_output=" you waited in place "
+                output_line=$output_line$new_output
 ####################
 ####### inventory
 ####################
 
                 
-        if [ $player_move == "i" ]
+        elif [ $player_move == "i" ]
                 then
                 echo " "
                 echo " "
@@ -373,6 +377,7 @@ while [ not_end_game ]
                                                         suffix=${whole_map:$new_pos}
                                                         whole_map="$prefix$new_char$suffix"
                                                         still_looking_for_good_spot_for_new_enemy=false
+                                                        goblin_positions+=("$x $y")
                                                 fi
                                         fi
 
@@ -396,12 +401,13 @@ while [ not_end_game ]
                                                         suffix=${whole_map:$new_pos}
                                                         whole_map="$prefix$new_char$suffix"
                                                         still_looking_for_good_spot_for_new_enemy=false
+                                                        goblin_positions+=("$x $y")
                                                 fi
                                         fi
                                 elif [ $edge_for_enemy_to_spawn == 2 ]
                                         then
                                         echo " spawn right "
-                                        x=$screen_width
+                                        x=$((screen_width-2))
                                         y=$(($RANDOM%screen_height))
                                         new_pos=$(((($screen_width+1)*($y))+$x+1))
                                         trimmed_map=$(echo "$whole_map" | xargs)
@@ -418,6 +424,7 @@ while [ not_end_game ]
                                                         suffix=${whole_map:$new_pos}
                                                         whole_map="$prefix$new_char$suffix"
                                                         still_looking_for_good_spot_for_new_enemy=false
+                                                        goblin_positions+=("$x $y")
                                                 fi
                                         fi
 
@@ -426,7 +433,7 @@ while [ not_end_game ]
                                         then
                                         echo " spawn bottom "
                                         x=$(($RANDOM%screen_width))
-                                        y=($screen_height-1)
+                                        y=$((screen_height-1))
                                         new_pos=$(((($screen_width+1)*($y))+$x+1))
                                         trimmed_map=$(echo "$whole_map" | xargs)
                                         char_on=${trimmed_map:$new_pos-1:1}
@@ -444,6 +451,7 @@ while [ not_end_game ]
                                                         suffix=${whole_map:$new_pos}
                                                         whole_map="$prefix$new_char$suffix"
                                                         still_looking_for_good_spot_for_new_enemy=false
+                                                        goblin_positions+=("$x $y")
                                                 fi
                                         fi
 
@@ -457,8 +465,53 @@ while [ not_end_game ]
 #########################
 ##### goblin movement section
 #########################
+        updated_positions=()
+        echo "  zzzddddddddzzzzzzzddddddd"
+        for position in "${goblin_positions[@]}"
+                do
+                echo "$position"
+                read -r x y <<< "$position"
+                echo "x: $x, y: $y"
+                echo "your_xpos: $your_xpos,  your_ypos: $your_xpos"
+                dx=$((your_xpos-1-x))
+                dy=$((your_ypos-y))
+                 # update map remove old G
+                new_char="#"
+                old_pos=$(((($screen_width+1)*($y))+$x+1))
+                prefix=${whole_map:0:$((old_pos-1))}
+                suffix=${whole_map:$old_pos}
+                whole_map="$prefix$new_char$suffix"
+                if (( dx > 1 ))
+                        then
+                        x=$((x+1))
 
-
+                elif (( dx < 1 ))
+                        then
+                        x=$((x-1))                        
+                fi
+                if (( dy > 1 ))
+                        then
+                        y=$((y+1))
+                elif (( dy < 1 ))
+                        then
+                        y=$((y-1))
+                fi
+                 # update map for new G
+                new_char="G"
+                new_pos=$(((($screen_width+1)*($y))+$x+1))
+                prefix=${whole_map:0:$((new_pos-1))}
+                suffix=${whole_map:$new_pos}
+                whole_map="$prefix$new_char$suffix"
+                updated_positions+=("$x $y")
+                
+        done
+        for position in "${goblin_positions[@]}"; do
+            echo "old position: $position"
+        done
+        goblin_positions=("${updated_positions[@]}")
+        for position in "${goblin_positions[@]}"; do
+                echo "Updated position: $position"
+        done
 
 
         done
